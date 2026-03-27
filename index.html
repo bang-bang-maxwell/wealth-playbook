@@ -1,0 +1,288 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Generational Wealth Playbook</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{--bg:#0a0a0f;--card:#12121a;--card2:#1a1a26;--accent:#f7931a;--accent2:#4a9eff;--green:#22c55e;--red:#ef4444;--text:#e2e2e8;--muted:#7a7a8e;--border:#2a2a3a;--glow:rgba(247,147,26,0.15)}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',system-ui,sans-serif;background:var(--bg);color:var(--text);min-height:100vh;padding:20px;max-width:900px;margin:0 auto;line-height:1.6}
+h1{font-size:1.8rem;font-weight:700;margin-bottom:4px;background:linear-gradient(135deg,var(--accent),#ffd700);-webkit-background-clip:text;-webkit-text-fill-color:transparent}
+.subtitle{color:var(--muted);font-size:.9rem;margin-bottom:24px}
+.disclaimer{background:var(--card);border:1px solid var(--border);border-left:3px solid var(--red);padding:14px 16px;border-radius:8px;margin-bottom:28px;font-size:.82rem;color:var(--muted);line-height:1.5}
+.disclaimer strong{color:var(--red)}
+.stats-row{display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:12px;margin-bottom:28px}
+.stat-card{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;text-align:center}
+.stat-card .num{font-size:1.6rem;font-weight:700;color:var(--accent)}
+.stat-card .label{font-size:.75rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-top:2px}
+.master-progress{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:16px;margin-bottom:28px}
+.master-progress .title{font-size:.8rem;color:var(--muted);text-transform:uppercase;letter-spacing:.5px;margin-bottom:8px}
+.progress-bar-outer{background:var(--card2);border-radius:8px;height:14px;overflow:hidden;position:relative}
+.progress-bar-inner{height:100%;border-radius:8px;background:linear-gradient(90deg,var(--accent),#ffd700);transition:width .5s ease;min-width:0}
+.progress-pct{font-size:1.1rem;font-weight:600;color:var(--accent);margin-top:6px}
+.phase{margin-bottom:24px}
+.phase-header{display:flex;align-items:center;gap:10px;padding:14px 16px;background:var(--card);border:1px solid var(--border);border-radius:10px 10px 0 0;cursor:pointer;user-select:none}
+.phase-header:hover{background:var(--card2)}
+.phase-icon{font-size:1.3rem}
+.phase-title{font-weight:600;font-size:1rem;flex:1}
+.phase-badge{font-size:.7rem;padding:3px 8px;border-radius:20px;font-weight:600;text-transform:uppercase;letter-spacing:.3px}
+.badge-once{background:rgba(74,158,255,0.15);color:var(--accent2)}
+.badge-daily{background:rgba(34,197,94,0.15);color:var(--green)}
+.badge-monthly{background:rgba(247,147,26,0.15);color:var(--accent)}
+.badge-quarterly{background:rgba(168,85,247,0.15);color:#a855f7}
+.badge-annual{background:rgba(236,72,153,0.15);color:#ec4899}
+.phase-progress{font-size:.8rem;color:var(--muted);min-width:40px;text-align:right}
+.phase-arrow{color:var(--muted);transition:transform .2s;font-size:.8rem}
+.phase-arrow.open{transform:rotate(180deg)}
+.phase-body{border:1px solid var(--border);border-top:none;border-radius:0 0 10px 10px;overflow:hidden}
+.task{display:flex;align-items:flex-start;gap:12px;padding:12px 16px;border-bottom:1px solid var(--border);transition:background .15s}
+.task:last-child{border-bottom:none}
+.task:hover{background:var(--card2)}
+.task.done{opacity:.55}
+.task.done .task-title{text-decoration:line-through}
+.cb{width:20px;height:20px;min-width:20px;border:2px solid var(--border);border-radius:5px;cursor:pointer;display:flex;align-items:center;justify-content:center;margin-top:2px;transition:all .15s;background:transparent}
+.cb:hover{border-color:var(--accent)}
+.cb.checked{background:var(--accent);border-color:var(--accent)}
+.cb.checked::after{content:'✓';color:#000;font-size:12px;font-weight:700}
+.task-content{flex:1}
+.task-title{font-size:.9rem;font-weight:500}
+.task-desc{font-size:.78rem;color:var(--muted);margin-top:3px;line-height:1.45}
+.task-tag{display:inline-block;font-size:.65rem;padding:2px 6px;border-radius:3px;margin-top:4px;font-weight:600}
+.tag-critical{background:rgba(239,68,68,0.15);color:var(--red)}
+.tag-high{background:rgba(247,147,26,0.15);color:var(--accent)}
+.tag-med{background:rgba(74,158,255,0.15);color:var(--accent2)}
+.principles{background:var(--card);border:1px solid var(--border);border-radius:10px;padding:20px;margin-bottom:28px}
+.principles h2{font-size:1.1rem;margin-bottom:12px;color:var(--accent)}
+.principle{padding:8px 0;border-bottom:1px solid var(--border);font-size:.85rem}
+.principle:last-child{border-bottom:none}
+.principle strong{color:var(--text)}
+.principle span{color:var(--muted)}
+.reset-btn{background:none;border:1px solid var(--border);color:var(--muted);padding:8px 16px;border-radius:6px;cursor:pointer;font-size:.8rem;margin-top:16px}
+.reset-btn:hover{border-color:var(--red);color:var(--red)}
+footer{text-align:center;padding:30px 0;font-size:.75rem;color:var(--muted)}
+.collapse{display:none}
+.collapse.show{display:block}
+@media(max-width:600px){body{padding:12px}h1{font-size:1.4rem}.stats-row{grid-template-columns:1fr 1fr}.task{padding:10px 12px}}
+</style>
+</head>
+<body>
+
+<h1>Generational Wealth Playbook</h1>
+<p class="subtitle">A dummy-proof system for building and protecting long-term value.</p>
+
+<div class="disclaimer">
+<strong>&#9888; Not financial advice.</strong> This is a personal checklist based on widely-discussed principles. Consult a licensed financial advisor and estate attorney before making decisions. All investments carry risk, including total loss of principal.
+</div>
+
+<div class="stats-row">
+  <div class="stat-card"><div class="num" id="completedCount">0</div><div class="label">Completed</div></div>
+  <div class="stat-card"><div class="num" id="totalCount">0</div><div class="label">Total Tasks</div></div>
+  <div class="stat-card"><div class="num" id="criticalLeft">0</div><div class="label">Critical Left</div></div>
+  <div class="stat-card"><div class="num" id="streakCount">0</div><div class="label">Day Streak</div></div>
+</div>
+
+<div class="master-progress">
+  <div class="title">Overall Progress</div>
+  <div class="progress-bar-outer"><div class="progress-bar-inner" id="masterBar" style="width:0%"></div></div>
+  <div class="progress-pct" id="masterPct">0%</div>
+</div>
+
+<div id="phases"></div>
+
+<div class="principles">
+  <h2>Core Philosophy: Why This Path</h2>
+  <div class="principle"><strong>Dollar-cost averaging removes emotion.</strong> <span>$10/day means you buy high sometimes, low sometimes, and over a long horizon your average cost smooths out. Don't try to time anything.</span></div>
+  <div class="principle"><strong>Self-custody is non-negotiable.</strong> <span>Exchanges go bankrupt (FTX, Celsius, BlockFi). If you don't hold the keys, you don't hold the Bitcoin. Period.</span></div>
+  <div class="principle"><strong>Estate planning is the unsexy multiplier.</strong> <span>Building wealth means nothing if your family can't access it or gets destroyed by probate and taxes. This is the step most people skip.</span></div>
+  <div class="principle"><strong>USD isn't "safe," it's just familiar.</strong> <span>The dollar has lost ~97% of purchasing power since 1913. Bitcoin's fixed supply of 21M is the thesis. But concentration risk is real, so a small hedge in other hard assets is prudent risk management.</span></div>
+  <div class="principle"><strong>Never sell under pressure.</strong> <span>Most wealth destruction comes from panic selling during drawdowns. If your time horizon is decades, a 50% drawdown is noise. The system below is built to make you boring and consistent.</span></div>
+  <div class="principle"><strong>Security is your #1 job.</strong> <span>The biggest risk to your Bitcoin isn't the market. It's phishing, social engineering, bad seed phrase storage, and single points of failure. Treat this like protecting a vault.</span></div>
+</div>
+
+<div style="text-align:center">
+  <button class="reset-btn" onclick="resetAll()">&#8635; Reset All Progress</button>
+</div>
+
+<footer>Built for long-term holders. Review daily. Update weekly. Stay humble. Stack sats.</footer>
+
+<script>
+const DATA = [
+  {
+    id:"foundation",icon:"&#128272;",title:"Foundation: Do These First",badge:"One-Time",badgeClass:"badge-once",
+    tasks:[
+      {id:"f1",title:"Open a dedicated Bitcoin exchange account (Strike, River, Swan, or Cash App)",desc:"These are Bitcoin-focused platforms with auto-DCA features. Avoid shiny altcoin casinos like Coinbase Pro or Binance for your core stack.",tag:"critical"},
+      {id:"f2",title:"Set up automatic $10/day DCA purchase",desc:"Automate it and forget it. The whole point is removing your brain from the equation. Set it to pull from checking automatically.",tag:"critical"},
+      {id:"f3",title:"Buy a hardware wallet (Coldcard, Trezor, or Ledger)",desc:"This is your vault. Buy directly from the manufacturer's website only. Never Amazon, never eBay, never secondhand. Budget ~$70-150.",tag:"critical"},
+      {id:"f4",title:"Set up the hardware wallet and transfer a small test amount",desc:"Send $20 worth first. Verify you can receive it. Then practice restoring from your seed phrase before sending the rest.",tag:"critical"},
+      {id:"f5",title:"Write down your 12/24-word seed phrase on steel (not paper)",desc:"Buy a steel seed plate (Blockplate, Cryptosteel, or a simple steel washer method). Paper burns, gets wet, fades. Steel survives house fires and floods.",tag:"critical"},
+      {id:"f6",title:"Store seed phrase backup in a separate physical location",desc:"Safety deposit box, trusted family member's safe, or a second secure location. Never in the same building as your hardware wallet.",tag:"critical"},
+      {id:"f7",title:"Build a 3-month emergency fund in a HYSA (yes, in USD)",desc:"This is your pressure-relief valve. If life hits you, you tap this instead of selling Bitcoin at the worst time. Even if you distrust USD long-term, short-term liquidity prevents forced selling.",tag:"high"},
+      {id:"f8",title:"Delete all crypto apps from your phone's home screen",desc:"Move exchange apps off the main screen or delete entirely. Checking price 50x/day creates anxiety and temptation. You're on autopilot now.",tag:"med"},
+      {id:"f9",title:"Set up a dedicated email for all crypto accounts (not your main email)",desc:"Use a fresh email with a strong unique password + hardware 2FA. This is your single biggest defense against phishing and SIM swaps.",tag:"high"},
+      {id:"f10",title:"Enable hardware-based 2FA (YubiKey) on exchange + email",desc:"SMS 2FA is hackable via SIM swap. A YubiKey (~$25-50) makes your accounts virtually un-phishable. Buy two (one backup).",tag:"high"}
+    ]
+  },
+  {
+    id:"recurring",icon:"&#128260;",title:"Recurring Habits: The System",badge:"Daily / Weekly",badgeClass:"badge-daily",
+    tasks:[
+      {id:"r1",title:"Confirm DCA is still running (weekly glance)",desc:"Every Monday, take 30 seconds to verify your auto-buy executed. Check your exchange transaction history. That's it. Don't look at the price.",tag:"high"},
+      {id:"r2",title:"Withdraw from exchange to hardware wallet monthly",desc:"Don't let Bitcoin sit on exchanges. Once a month, move your accumulated DCA stack to your cold storage. Set a calendar reminder.",tag:"critical"},
+      {id:"r3",title:"Never reveal your holdings publicly",desc:"No Twitter/Reddit posts. No 'I own X Bitcoin' at parties. The #1 security risk is other people knowing you have something worth stealing. This is a forever rule.",tag:"critical"},
+      {id:"r4",title:"Increase DCA amount by $1/day each year if income allows",desc:"$10/day in year 1 → $11/day in year 2 → $12/day in year 3. Small incremental increases compound massively over decades.",tag:"med"},
+      {id:"r5",title:"Review this checklist on the 1st of every month",desc:"Bookmark this page. Set a recurring calendar event. Re-read the principles section. The system only works if you actually follow it.",tag:"high"}
+    ]
+  },
+  {
+    id:"security",icon:"&#128737;",title:"Security Hardening",badge:"One-Time",badgeClass:"badge-once",
+    tasks:[
+      {id:"s1",title:"Set up a multisig wallet (2-of-3) once holdings exceed ~$50k",desc:"Multisig means 2 of 3 keys are needed to move funds. If one key is compromised or lost, your Bitcoin is still safe. Casa, Unchained, or Sparrow Wallet can help.",tag:"high"},
+      {id:"s2",title:"Create a 'letter to loved ones' with access instructions",desc:"A sealed document explaining: what Bitcoin is, where the hardware wallet is, where the seed backups are, and step-by-step recovery instructions. Written for someone with zero crypto knowledge.",tag:"critical"},
+      {id:"s3",title:"Test your backup recovery process once per year",desc:"Actually restore your wallet from seed phrase on a wiped device annually. If you can't do this successfully, your family definitely can't.",tag:"high"},
+      {id:"s4",title:"Use a passphrase (25th word) for plausible deniability",desc:"Advanced: a passphrase creates a hidden second wallet. If coerced, you can reveal the base wallet (with a small amount) while the passphrase wallet stays hidden. Research this carefully before implementing.",tag:"med"},
+      {id:"s5",title:"Never click links in emails/DMs about crypto",desc:"Go directly to websites by typing the URL. Every. Single. Time. Bookmark your exchange and wallet sites. Phishing is the #1 way people lose funds.",tag:"critical"}
+    ]
+  },
+  {
+    id:"estate",icon:"&#128196;",title:"Estate Planning &amp; Legal",badge:"Annual",badgeClass:"badge-annual",
+    tasks:[
+      {id:"e1",title:"Draft a basic will with a licensed estate attorney",desc:"This doesn't need to be fancy. A will determines who gets what without a court battle. Without one, your state decides, and the process (probate) can take years and cost your family thousands.",tag:"critical"},
+      {id:"e2",title:"Set up a revocable living trust (if holdings warrant it)",desc:"A trust lets assets transfer to beneficiaries without probate. Once your total net worth (Bitcoin + everything else) exceeds $100k, this conversation becomes worth having with an attorney.",tag:"high"},
+      {id:"e3",title:"Name beneficiaries on all financial accounts",desc:"Exchange accounts, bank accounts, retirement accounts. Named beneficiaries bypass probate entirely. This takes 10 minutes per account and is the single easiest legal win.",tag:"critical"},
+      {id:"e4",title:"Create a secure 'digital estate' document",desc:"List all accounts, exchanges, wallet types, and general access procedures. Store with your attorney or in a safe. Update annually. Don't include seed phrases here (those go to your heir directly).",tag:"high"},
+      {id:"e5",title:"Teach one trusted person the basics of Bitcoin recovery",desc:"Pick your spouse, sibling, or adult child. Walk them through: what a hardware wallet is, what a seed phrase does, how to restore, and who to call for help (not a random 'crypto expert' on Twitter).",tag:"critical"},
+      {id:"e6",title:"Review and update estate documents annually",desc:"Life changes: marriages, divorces, births, deaths. Set a yearly calendar reminder to review beneficiaries, trust documents, and your access instructions letter.",tag:"high"}
+    ]
+  },
+  {
+    id:"tax",icon:"&#129534;",title:"Tax Optimization",badge:"Quarterly",badgeClass:"badge-quarterly",
+    tasks:[
+      {id:"t1",title:"Track all DCA purchases with a cost-basis tracker",desc:"Use a tool like CoinTracker, Koinly, or even a simple spreadsheet. Record every buy with date, amount, and USD price paid. Your future self (or accountant) will thank you.",tag:"high"},
+      {id:"t2",title:"Understand long-term vs short-term capital gains",desc:"Held over 1 year = long-term rate (0-20%). Held under 1 year = taxed as regular income (up to 37%). This is why you hold and don't trade.",tag:"high"},
+      {id:"t3",title:"Open a Roth IRA and max it out annually ($7k/yr for under 50)",desc:"Roth IRA gains are tax-FREE forever. Even if you can't hold Bitcoin directly in it, filling this with index funds creates a tax-free growth bucket that diversifies your overall estate.",tag:"high"},
+      {id:"t4",title:"If self-employed: explore Solo 401k or SEP IRA",desc:"These let you shelter significant income from taxes, and some custodians (like Unchained or iTrustCapital) allow Bitcoin exposure inside retirement accounts.",tag:"med"},
+      {id:"t5",title:"File taxes accurately every year, including crypto",desc:"The IRS asks directly on Form 1040 about digital assets. Lying or omitting is a federal offense. Just report it. If your situation is complex, spend the $200-400 on a CPA.",tag:"critical"}
+    ]
+  },
+  {
+    id:"diversify",icon:"&#9878;&#65039;",title:"Strategic Diversification (Don't Go 100% Anything)",badge:"Annual",badgeClass:"badge-annual",
+    tasks:[
+      {id:"d1",title:"Maintain Bitcoin as core position (50-80% of portfolio)",desc:"You believe in the thesis. Great. But concentration risk is real. Even true believers benefit from not having literally everything in one asset.",tag:"high"},
+      {id:"d2",title:"Hold 3-6 months expenses in USD/stablecoins as dry powder",desc:"This isn't because you love the dollar. It's because having cash on hand means you never sell Bitcoin to cover rent, a medical bill, or a car repair.",tag:"critical"},
+      {id:"d3",title:"Consider small allocation to physical gold/silver (5-10%)",desc:"If your thesis is 'hard money beats soft money,' gold has a 5,000-year track record. It's not either/or. A small metals position hedges against scenarios where digital infrastructure is disrupted.",tag:"med"},
+      {id:"d4",title:"If/when income allows: explore real estate",desc:"Rental income is one of the most time-tested wealth builders. Even a single rental property creates cash flow that funds more Bitcoin DCA without touching your stack.",tag:"med"},
+      {id:"d5",title:"Never buy altcoins, NFTs, or 'the next Bitcoin'",desc:"99% of altcoins go to zero. This isn't close-minded, it's math. The alt graveyard is enormous. Stick to the asset with the longest track record, strongest network effect, and most regulatory clarity.",tag:"high"}
+    ]
+  },
+  {
+    id:"mindset",icon:"&#129504;",title:"Mindset &amp; Long Game",badge:"Ongoing",badgeClass:"badge-daily",
+    tasks:[
+      {id:"m1",title:"Define your 'never sell' number and write it down",desc:"Decide what portion of your stack is untouchable generational wealth vs. what might be spent in your lifetime. Write it down. Revisit it once a year. This creates psychological armor during drawdowns.",tag:"high"},
+      {id:"m2",title:"Delete trading apps. You are not a trader.",desc:"You're a long-term accumulator. Trading is a full-time job where 90% of participants lose money. Your edge is time, not timing.",tag:"high"},
+      {id:"m3",title:"Read 'The Bitcoin Standard' by Saifedean Ammous",desc:"Regardless of where you land on Bitcoin maximalism, this book gives you the economic framework to understand why hard money matters and why you're doing what you're doing.",tag:"med"},
+      {id:"m4",title:"Survive your first -50% drawdown without selling",desc:"It will happen. It has happened multiple times in Bitcoin's history. If your DCA is automated and your emergency fund is funded, you just... keep buying. That's literally the whole strategy.",tag:"critical"},
+      {id:"m5",title:"Revisit this plan every January. Adjust amounts, not strategy.",desc:"The dollar amounts change as your life changes. The strategy (DCA, self-custody, estate planning, hold) does not. Annual review keeps you accountable without encouraging tinkering.",tag:"high"}
+    ]
+  }
+];
+
+let state = {};
+try { state = JSON.parse(localStorage.getItem('wealthState')||'{}'); } catch(e) { state = {}; }
+if(!state.tasks) state.tasks = {};
+if(!state.streak) state.streak = 0;
+if(!state.lastVisit) state.lastVisit = null;
+
+function updateStreak(){
+  const today = new Date().toDateString();
+  if(state.lastVisit){
+    const last = new Date(state.lastVisit);
+    const diff = Math.floor((new Date(today) - last)/(1000*60*60*24));
+    if(diff === 1) state.streak++;
+    else if(diff > 1) state.streak = 1;
+  } else { state.streak = 1; }
+  state.lastVisit = today;
+  save();
+}
+
+function save(){
+  try { localStorage.setItem('wealthState', JSON.stringify(state)); } catch(e){}
+}
+
+function render(){
+  const container = document.getElementById('phases');
+  container.innerHTML = '';
+  let totalTasks = 0, completed = 0, criticalLeft = 0;
+
+  DATA.forEach(phase => {
+    const phaseDiv = document.createElement('div');
+    phaseDiv.className = 'phase';
+    const phaseDone = phase.tasks.filter(t => state.tasks[t.id]).length;
+    const phaseTotal = phase.tasks.length;
+    totalTasks += phaseTotal;
+    completed += phaseDone;
+    phase.tasks.forEach(t => { if(t.tag === 'critical' && !state.tasks[t.id]) criticalLeft++; });
+
+    const isOpen = state['open_'+phase.id] !== false;
+
+    phaseDiv.innerHTML = `
+      <div class="phase-header" onclick="togglePhase('${phase.id}')">
+        <span class="phase-icon">${phase.icon}</span>
+        <span class="phase-title">${phase.title}</span>
+        <span class="phase-badge ${phase.badgeClass}">${phase.badge}</span>
+        <span class="phase-progress">${phaseDone}/${phaseTotal}</span>
+        <span class="phase-arrow ${isOpen?'open':''}">&#9660;</span>
+      </div>
+      <div class="phase-body collapse ${isOpen?'show':''}" id="body_${phase.id}">
+        ${phase.tasks.map(t => {
+          const checked = state.tasks[t.id];
+          const tagLabel = t.tag === 'critical' ? '&#128680; CRITICAL' : t.tag === 'high' ? '&#9889; HIGH' : '&#10003; RECOMMENDED';
+          const tagClass = t.tag === 'critical' ? 'tag-critical' : t.tag === 'high' ? 'tag-high' : 'tag-med';
+          return `<div class="task ${checked?'done':''}" id="task_${t.id}">
+            <div class="cb ${checked?'checked':''}" onclick="toggle('${t.id}')"></div>
+            <div class="task-content">
+              <div class="task-title">${t.title}</div>
+              <div class="task-desc">${t.desc}</div>
+              <span class="task-tag ${tagClass}">${tagLabel}</span>
+            </div>
+          </div>`;
+        }).join('')}
+      </div>
+    `;
+    container.appendChild(phaseDiv);
+  });
+
+  document.getElementById('completedCount').textContent = completed;
+  document.getElementById('totalCount').textContent = totalTasks;
+  document.getElementById('criticalLeft').textContent = criticalLeft;
+  document.getElementById('streakCount').textContent = state.streak || 0;
+  const pct = totalTasks ? Math.round((completed/totalTasks)*100) : 0;
+  document.getElementById('masterBar').style.width = pct+'%';
+  document.getElementById('masterPct').textContent = pct+'%';
+}
+
+function toggle(id){
+  state.tasks[id] = !state.tasks[id];
+  save();
+  render();
+}
+
+function togglePhase(id){
+  const key = 'open_'+id;
+  state[key] = state[key] === false ? true : false;
+  save();
+  render();
+}
+
+function resetAll(){
+  if(confirm('Reset all progress? This cannot be undone.')){
+    state = {tasks:{},streak:0,lastVisit:null};
+    save();
+    render();
+  }
+}
+
+updateStreak();
+render();
+</script>
+</body>
+</html>
